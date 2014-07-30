@@ -1,0 +1,11 @@
+{
+  "minimum-stability": "dev",
+  "require": {
+    "corneltek/pux": "~1.5",
+    "symfony/routing": "2.5.2",
+    "symfony/config": "2.5.2",
+    "symfony/http-foundation": "2.5.2",
+    "leoontheearth/strike": "dev-master",
+    "leoontheearth/strike-accelerator": "dev-master"
+  }
+}
