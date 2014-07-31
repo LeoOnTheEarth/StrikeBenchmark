@@ -17,6 +17,24 @@ $bench1 = new Ubench();
 $bench2 = new Ubench();
 
 $bench->start();
+
+for ($i = 0; $i < $n; ++$i) {
+    $collection = new RouteCollection();
+
+    foreach ($routes as $id => $route) {
+        $collection->add($id, new Route($route['pattern']));
+    }
+
+    $context = new RequestContext();
+    $matcher = new UrlMatcher($collection, $context);
+    
+    $parameters = $matcher->match('/blog/article/345/router-benchmarks');
+    //$parameters = $router->match('/');
+    $route = $collection->get($parameters['_route']);
+}
+
+$bench->end();
+
 $bench1->start();
 
 for ($i = 0; $i < $n; ++$i) {
@@ -36,13 +54,9 @@ $bench2->start();
 for ($i = 0; $i < $n; ++$i) {
     $parameters = $matcher->match('/blog/article/345/router-benchmarks');
     //$parameters = $router->match('/');
-
     $route = $collection->get($parameters['_route']);
-
-    //echo $route->getPath();
 }
 
 $bench2->end();
-$bench->end();
 
 showResults($n, $bench, $bench1, $bench2);

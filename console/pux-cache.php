@@ -14,6 +14,27 @@ $bench1 = new Ubench();     // Initialize router benchmark
 $bench2 = new Ubench();     // Match pattern benchmark
 
 $bench->start();
+
+for ($i = 0; $i < $n; ++$i) {
+    if (!file_exists($cache)) {
+        $router = new Pux\Mux();
+
+        foreach ($routes as $id => $route) {
+            $router->add($route['pattern2'], []);
+        }
+
+        $router->sort();
+
+        $router->compile($cache);
+    } else {
+        $router = require $cache;
+    }
+    
+    $route = $router->match('/blog/article/345/router-benchmarks');
+}
+
+$bench->end();
+
 $bench1->start();
 
 for ($i = 0; $i < $n; ++$i) {
@@ -38,11 +59,8 @@ $bench2->start();
 for ($i = 0; $i < $n; ++$i) {
     $route = $router->match('/blog/article/345/router-benchmarks');
     //$route = $router->match('/');
-
-    //echo ($route[0] ? $route[3]['pattern'] : $route[1]) . PHP_EOL;
 }
 
 $bench2->end();
-$bench->end();
 
 showResults($n, $bench, $bench1, $bench2);
