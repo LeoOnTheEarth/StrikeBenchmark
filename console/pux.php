@@ -7,11 +7,10 @@ require __DIR__ . '/functions.php';
 
 $routes = parse_ini_file(__DIR__ . '/../cases/routes.ini', true);
 
-$bench = new Ubench();
-$bench1 = new Ubench();
-$bench2 = new Ubench();
+$bench1 = new Ubench();     // Total benchmark
+$bench2 = new Ubench();     // Match pattern benchmark
 
-$bench->start();
+$bench1->start();
 
 for ($i = 0; $i < $n; ++$i) {
     $router = new Pux\Mux();
@@ -25,21 +24,16 @@ for ($i = 0; $i < $n; ++$i) {
     $route = $router->match('/blog/article/345/router-benchmarks');
 }
 
-$bench->end();
+$bench1->end();
 
-$bench1->start();
+$router = new Pux\Mux();
 
-for ($i = 0; $i < $n; ++$i) {
-    $router = new Pux\Mux();
-
-    foreach ($routes as $id => $route) {
-        $router->add($route['pattern2'], ['Controller', 'action']);
-    }
-
-    $router->sort();
+foreach ($routes as $id => $route) {
+    $router->add($route['pattern2'], ['Controller', 'action']);
 }
 
-$bench1->end();
+$router->sort();
+
 $bench2->start();
 
 for ($i = 0; $i < $n; ++$i) {
@@ -49,4 +43,4 @@ for ($i = 0; $i < $n; ++$i) {
 
 $bench2->end();
 
-showResults($n, $bench, $bench1, $bench2);
+showResults($n, $bench1, $bench2);

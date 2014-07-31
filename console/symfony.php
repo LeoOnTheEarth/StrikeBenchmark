@@ -12,11 +12,10 @@ use Symfony\Component\Routing\Route;
 
 $routes = parse_ini_file(__DIR__ . '/../cases/routes.ini', true);
 
-$bench = new Ubench();
-$bench1 = new Ubench();
-$bench2 = new Ubench();
+$bench1 = new Ubench();     // Total benchmark
+$bench2 = new Ubench();     // Match pattern benchmark
 
-$bench->start();
+$bench1->start();
 
 for ($i = 0; $i < $n; ++$i) {
     $collection = new RouteCollection();
@@ -33,22 +32,17 @@ for ($i = 0; $i < $n; ++$i) {
     $route = $collection->get($parameters['_route']);
 }
 
-$bench->end();
+$bench1->end();
 
-$bench1->start();
+$collection = new RouteCollection();
 
-for ($i = 0; $i < $n; ++$i) {
-    $collection = new RouteCollection();
-
-    foreach ($routes as $id => $route) {
-        $collection->add($id, new Route($route['pattern']));
-    }
-
-    $context = new RequestContext();
-    $matcher = new UrlMatcher($collection, $context);
+foreach ($routes as $id => $route) {
+    $collection->add($id, new Route($route['pattern']));
 }
 
-$bench1->end();
+$context = new RequestContext();
+$matcher = new UrlMatcher($collection, $context);
+
 $bench2->start();
 
 for ($i = 0; $i < $n; ++$i) {
@@ -59,4 +53,4 @@ for ($i = 0; $i < $n; ++$i) {
 
 $bench2->end();
 
-showResults($n, $bench, $bench1, $bench2);
+showResults($n, $bench1, $bench2);

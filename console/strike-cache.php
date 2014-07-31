@@ -5,11 +5,10 @@ $n = 10000;
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/functions.php';
 
-$bench = new Ubench();
-$bench1 = new Ubench();
-$bench2 = new Ubench();
+$bench1 = new Ubench();     // Total benchmark
+$bench2 = new Ubench();     // Match pattern benchmark
 
-$bench->start();
+$bench1->start();
 
 for ($i = 0; $i < $n; ++$i) {
     $router = Strike\RouterAccelerator::createRouter(
@@ -21,19 +20,14 @@ for ($i = 0; $i < $n; ++$i) {
     $result = $router->match('/blog/article/345/router-benchmarks');
 }
 
-$bench->end();
-
-$bench1->start();
-
-for ($i = 0; $i < $n; ++$i) {
-    $router = Strike\RouterAccelerator::createRouter(
-        new Strike\RouteFileLoader\IniRouteFileLoader(),
-        array(__DIR__ . '/../cases/routes.ini'),
-        array('cacheFile' => __DIR__ . '/../cache/ConsoleStrikeRoutes.php')
-    );
-}
-
 $bench1->end();
+
+$router = Strike\RouterAccelerator::createRouter(
+    new Strike\RouteFileLoader\IniRouteFileLoader(),
+    array(__DIR__ . '/../cases/routes.ini'),
+    array('cacheFile' => __DIR__ . '/../cache/ConsoleStrikeRoutes.php')
+);
+
 $bench2->start();
 
 for ($i = 0; $i < $n; ++$i) {
@@ -43,4 +37,4 @@ for ($i = 0; $i < $n; ++$i) {
 
 $bench2->end();
 
-showResults($n, $bench, $bench1, $bench2);
+showResults($n, $bench1, $bench2);
